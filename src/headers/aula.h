@@ -1,11 +1,11 @@
 #ifndef aula_h
 #define aula_h
 
-#include "headers/utils.h"
+#include <string>
 
 typedef struct aula
 {
-	int id;
+	char tipoAula;
 	int diaSemana;
 	string horaInicio;
 	string horaFim;

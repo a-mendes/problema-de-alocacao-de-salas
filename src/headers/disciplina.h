@@ -1,7 +1,8 @@
 #ifndef disciplina_h
 #define disciplina_h
 
-#include "headers/utils.h"
+#include <string>
+#include "departamento.h"
 
 /**
  * Ex: BCC466 TECNICAS METAHEURISTICAS PARA OTIMIZACAO COMBINATORIA
@@ -12,7 +13,7 @@
 typedef struct disciplina
 {
 	int id;
-	string departamento;
+	Departamento departamento;
 	string nome;
 
 } Disciplina;

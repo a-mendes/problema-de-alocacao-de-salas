@@ -1,9 +1,8 @@
 #ifndef turma_h
 #define turma_h
 
-#include "headers/utils.h"
-#include "headers/disciplina.h"
-#include "headers/aula.h"
+#include <vector>
+#include "disciplina.h"
 
 typedef struct turma
 {
