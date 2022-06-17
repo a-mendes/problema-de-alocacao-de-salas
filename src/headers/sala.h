@@ -1,7 +1,7 @@
 #ifndef sala_h
 #define sala_h
 
-#include <utils.h>
+#include "headers/utils.h"
 
 typedef struct sala
 {

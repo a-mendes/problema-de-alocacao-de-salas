@@ -1,7 +1,7 @@
 #ifndef disciplina_h
 #define disciplina_h
 
-#include <utils.h>
+#include "headers/utils.h"
 
 /**
  * Ex: BCC466 TECNICAS METAHEURISTICAS PARA OTIMIZACAO COMBINATORIA
