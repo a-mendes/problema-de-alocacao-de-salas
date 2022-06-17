@@ -1,13 +1,13 @@
 #Windows Makefile
 
 all: main.o utils.o
-	@gcc ./obj/main.o ./obj/utils.o -o pas
+	@g++ ./obj/main.o ./obj/utils.o -o pas
 
-main.o: ./src/main.c
-	@gcc -c ./src/main.c -o ./obj/main.o
+main.o: ./src/main.cpp
+	@g++ -c ./src/main.cpp -o ./obj/main.o
 
-utils.o: ./src/utils.c
-	@gcc -c ./src/utils.c -o ./obj/utils.o
+utils.o: ./src/utils.cpp
+	@g++ -c ./src/utils.cpp -o ./obj/utils.o
 
 run:
 	@./pas.exe

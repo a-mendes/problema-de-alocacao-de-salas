@@ -1,0 +1,11 @@
+Algoritmos Heurísticos 
+Nem sempre é possível encontrar a melhor solução de um problema de otimização em tempo razoável por meio de algoritmos exatos. Nesses casos, uma solução relativamente boa pode já ser suficiente para a aplicação que se tem em mãos. Os Métodos Heurísticos são algoritmos que não garantem encontrar a solução ótima de um problema, mas são capazes de retornar uma solução de qualidade em um tempo adequado para as necessidades da aplicação. 
+Meta-heurísticas 
+Meta-heurísticas são paradigmas de desenvolvimento de algoritmos heurísticos. Diversas propostas de meta-heuríticas surgiram nos últimos anos impulsionadas pelos problemas pertencentes à classe NP-difícil. Dentre as meta-heurísticas mais conhecidas podemos destacar
+
+Simulated Annealing:: baseada originalmente em conceitos de Mecânica Estatística considerando a analogia entre o processo físico annealing de sólidos e a resolução de problemas de otimização combinatorial. 
+
+
+
+Ensalamento em Escolas e Universidades (Timetabling) 
+Uma tarefa comum em todas as instituições de ensino é a construção de horários de aulas para os docentes e alocação de salas para as disciplinas, atendendo as restrições tanto de professores e alunos como de toda instituição envolvida. Normalmente, as restrições estão relacionadas a conflitos de horários de aula, alocação de salas mais adequadas para cada disciplina/turma, preferências (da disciplina e/ou professor) por horários, etc. A solução do problema consiste em gerar uma tabela de horários, visando minimizar os conflitos, maximizar preferências, compactar horários de professores e alunos e utilizar de maneira eficiente equipamentos e salas disponíveis.
