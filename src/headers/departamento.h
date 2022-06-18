@@ -1,12 +1,10 @@
 #ifndef departamento_h
 #define departamento_h
 
-#include <string>
-
 typedef struct departamento
 {
 	int id;
-	string sigla;
+	char sigla[4];
 
 } Departamento;
 

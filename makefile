@@ -13,6 +13,7 @@ run:
 	@./pas.exe
 
 go:
+	@cls
 	@make all
 	@make run
 
