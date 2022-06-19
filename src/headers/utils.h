@@ -16,6 +16,8 @@ using namespace std;
 #include "aula.h"
 #include "turma.h"
 
+#define QTD_HORARIOS 16
+
 void lerSalas(vector<Sala> &vetSalas);
 void imprimirSalas(vector<Sala> &vetSalas);
 
@@ -26,8 +28,17 @@ void lerDisciplinas(vector<Disciplina> &vetDisciplinas, vector<Departamento> &ve
 void imprimirDisciplinas(vector<Disciplina> &vetDisciplinas);
 
 void lerTurmas(vector<Turma> &vetTurmas, vector<Disciplina> &vetDisciplinas);
+int codificarTurma(Turma turma);
 void imprimirTurmas(vector<Turma> &vetTurmas);
 
 void lerAulasPorTurma(vector<Turma> &vetTurmas);
+
+void getVetorTurmaCodificada(vector<int> &turmaCodificada, vector<Turma> &vetTurmas);
+void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada);
+
+void imprimirSolucaoCodificada(vector<vector<vector<int>>> &solucao);
+
+void imprimirSolucaoDecodificada(vector<vector<vector<int>>> &solucao, 
+								 vector<Turma> &vetTurmas, vector<Sala> &vetSalas);
 
 #endif

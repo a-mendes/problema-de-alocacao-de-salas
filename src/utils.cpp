@@ -121,6 +121,7 @@ void lerTurmas(vector<Turma> &vetTurmas, vector<Disciplina> &vetDisciplinas)
 	    	if(idDisciplina == disciplina.id && idDepartamento == disciplina.departamento.id)
 	    	{
 	    		turma.disciplina = disciplina;
+	    		turma.codigo = codificarTurma(turma);
 	    		break;
 	    	}	
 	    }
@@ -132,6 +133,32 @@ void lerTurmas(vector<Turma> &vetTurmas, vector<Disciplina> &vetDisciplinas)
 	printf("\t\tFechando arquivo \"data/demanda.txt\"\n");
 }
 
+int codificarTurma(Turma turma)
+{
+	/**
+	 * A codificação resume em um int as informacoes mais relevantes de
+	 * uma turma. 
+	 * 
+	 * 		0: id departamento
+	 * 		1-3: id disciplina
+	 * 		4-5: id turma
+	 * 		6-7: quantidade de alunos matriculados na turma
+	 * 
+	 * 		Ex: Código: 11201140
+	 * 			* Disciplina: MTM120 ANALISE I (1120)
+	 * 			* Turma : 11
+	 * 			* numero de matriculados: 40
+	 */ 
+
+
+	int codigo = turma.disciplina.departamento.id * 10000000 +
+				 turma.disciplina.id * 10000 +
+				 turma.id * 100 +
+				 turma.qtdAlunos;
+
+	return codigo;
+}
+
 void imprimirTurmas(vector<Turma> &vetTurmas)
 {
 	printf("\n* Turmas\n");
@@ -139,6 +166,7 @@ void imprimirTurmas(vector<Turma> &vetTurmas)
     {
     	Turma turma = vetTurmas[i];
 
+    	printf("Codigo: %d\n", turma.codigo);
     	printf("\tTurma %d - %s: %d matriculados \n", turma.id,  turma.disciplina.nome, turma.qtdAlunos);
     	for (int j = 0; j < turma.aulas.size(); ++j)
     	{
@@ -181,4 +209,51 @@ void lerAulasPorTurma(vector<Turma> &vetTurmas)
 
 	fclose(arq);
 	printf("\t\tFechando arquivo \"data/horario.txt\"\n");
+}
+
+void getVetorTurmaCodificada(vector<int> &turmaCodificada, vector<Turma> &vetTurmas)
+{
+	for (int i = 0; i < vetTurmas.size(); ++i)
+	{
+		Turma turma = vetTurmas[i];
+		turmaCodificada.push_back(turma.codigo);
+	}
+}
+
+
+void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada)
+{
+	/**
+	 * Ordenação decrescente por "quantidade de alunos"
+	 * usando o algoritmo "ShellSort"
+	 */
+
+	int h;
+	int n = turmaCodificada.size();
+
+	for(h = 1; h < n; h = 3 * h + 1);
+
+	do
+	{
+		h = (h - 1) / 3;
+
+		for(int i = h; i < n; i++)
+		{
+			int aux = turmaCodificada[i];
+			int j = i;
+
+			while((turmaCodificada[j-h] % 100) < (aux % 100))
+			{
+				turmaCodificada[j] = turmaCodificada[j-h];
+
+				j = j - h;
+
+				if(j < h)
+					break;
+			}
+			
+			turmaCodificada[j] = aux;
+		}
+
+	} while (h != 1);
 }
