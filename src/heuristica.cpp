@@ -3,14 +3,42 @@
 void construirSolucaoInicial(vector<vector<vector<int>>> &solucao, vector<Turma> &vetTurmas, 
 	                         vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios)
 {
+	printf("\nConstruindo Solucao Inicial...\n");
+
+	printf("\n\tSolucao Segunda-Feira...\n");
 	vector<vector<int>> solucaoSegunda;
 	solucaoParcial(solucaoSegunda, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 2);
+	solucao.push_back(solucaoSegunda);
 
-	int solucaoTerca[qtdSalas][qtdHorarios];
-	int solucaoQuarta[qtdSalas][qtdHorarios];
-	int solucaoQuinta[qtdSalas][qtdHorarios];
-	int solucaoSexta[qtdSalas][qtdHorarios];
-	int solucaoSabado[qtdSalas][qtdHorarios];
+	printf("\n\tSolucao Terca-Feira...\n");
+	vector<vector<int>> solucaoTerca;
+	solucaoParcial(solucaoTerca, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 3);
+	solucao.push_back(solucaoTerca);
+
+	printf("\n\tSolucao Quarta-Feira...\n");
+	vector<vector<int>> solucaoQuarta;
+	solucaoParcial(solucaoQuarta, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 4);
+	solucao.push_back(solucaoQuarta);
+
+	printf("\n\tSolucao Quinta-Feira...\n");
+	vector<vector<int>> solucaoQuinta;
+	solucaoParcial(solucaoQuinta, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 5);
+	solucao.push_back(solucaoQuinta);
+
+	printf("\n\tSolucao Sexta-Feira...\n");
+	vector<vector<int>> solucaoSexta;
+	solucaoParcial(solucaoSexta, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 6);
+	solucao.push_back(solucaoSexta);
+
+	printf("\n\tSolucao Sabado...\n");
+	vector<vector<int>> solucaoSabado;
+	solucaoParcial(solucaoSabado, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 3);
+	solucao.push_back(solucaoSabado);
+
+	printf("\nSolucao inicial construida com sucesso!\n");
+
+	imprimirSolucaoDecodificada(solucao, vetTurmas, qtdSalas, qtdHorarios, 6);
+
 }
 
 void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas, 
@@ -35,7 +63,7 @@ void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas,
 		int turmaCodificada = turmasCodificadas[i];
 		
 		vector<Aula> aulas;
-		getAulasTurmaCodificada(aulas, vetTurmas, turmaCodificada);
+		getAulasTurmaCodificadaPorDiaSemana(aulas, vetTurmas, turmaCodificada, diaSemana);
 
 		for (int j = 0; j < aulas.size(); ++j)
 		{
@@ -43,15 +71,31 @@ void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas,
 
 			for (int k = 0; k < vetSalas.size(); ++k)
 			{
-				Sala sala = vetSalas[i];
+				Sala sala = vetSalas[k];
 
 				int qtdAlunos = turmaCodificada % 100;
 				if(sala.capacidade >= qtdAlunos && isHorarioDisponivel(solucao, sala.id, aula))
 				{
-					//Alocar Aula
+					alocarAula(solucao, sala.id, aula, turmaCodificada);
 				}
 			}
 		}
+	}
+}
+
+void alocarAula(vector<vector<int>> &solucao, int salaId, Aula aula, int turmaCodificada)
+{
+	for (int i = aula.codigoHorarioInicio; i < aula.codigoHorarioFim; ++i)
+	{
+		solucao[salaId][i] = turmaCodificada;
+	}
+}
+
+void desalocarAula(vector<vector<int>> &solucao, int salaId, Aula aula)
+{
+	for (int i = aula.codigoHorarioInicio; i < aula.codigoHorarioFim; ++i)
+	{
+		solucao[salaId][i] = 0;
 	}
 }
 

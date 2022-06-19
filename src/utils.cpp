@@ -3,8 +3,8 @@
 void lerSalas(vector<Sala> &vetSalas)
 {
 	FILE *arq;
-	arq = fopen("data/capacidade.txt", "r");
-	printf("\t\tAbrindo arquivo \"data/capacidade.txt\"\n");
+	arq = fopen("data-teste/capacidade.txt", "r");
+	printf("\t\tAbrindo arquivo \"data-teste/capacidade.txt\"\n");
 
 	while (!feof(arq))
 	{
@@ -15,7 +15,7 @@ void lerSalas(vector<Sala> &vetSalas)
 	}
 
 	fclose(arq);
-	printf("\t\tFechando arquivo \"data/capacidade.txt\"\n");
+	printf("\t\tFechando arquivo \"data-teste/capacidade.txt\"\n");
 }
 
 void imprimirSalas(vector<Sala> &vetSalas)
@@ -31,8 +31,8 @@ void imprimirSalas(vector<Sala> &vetSalas)
 void lerDepartamentos(vector<Departamento> &vetDepartamentos)
 {
 	FILE *arq;
-	arq = fopen("data/legenda_departamento.txt", "r");
-	printf("\t\tAbrindo arquivo \"data/legenda_departamento.txt\"\n");
+	arq = fopen("data-teste/legenda_departamento.txt", "r");
+	printf("\t\tAbrindo arquivo \"data-teste/legenda_departamento.txt\"\n");
 	
 	while (!feof(arq))
 	{
@@ -44,7 +44,7 @@ void lerDepartamentos(vector<Departamento> &vetDepartamentos)
 	}
 
 	fclose(arq);
-	printf("\t\tFechando arquivo \"data/legenda_departamento.txt\"\n");
+	printf("\t\tFechando arquivo \"data-teste/legenda_departamento.txt\"\n");
 }
 
 void imprimirDepartamentos(vector<Departamento> &vetDepartamentos)
@@ -60,8 +60,8 @@ void imprimirDepartamentos(vector<Departamento> &vetDepartamentos)
 void lerDisciplinas(vector<Disciplina> &vetDisciplinas, vector<Departamento> &vetDepartamentos)
 {
 	FILE *arq;
-	arq = fopen("data/nome.txt", "r");
-	printf("\t\tAbrindo arquivo \"data/nome.txt\"\n");
+	arq = fopen("data-teste/nome.txt", "r");
+	printf("\t\tAbrindo arquivo \"data-teste/nome.txt\"\n");
 
 	while (!feof(arq))
 	{
@@ -85,7 +85,7 @@ void lerDisciplinas(vector<Disciplina> &vetDisciplinas, vector<Departamento> &ve
 	}
 
 	fclose(arq);
-	printf("\t\tFechando arquivo \"data/nome.txt\"\n");
+	printf("\t\tFechando arquivo \"data-teste/nome.txt\"\n");
 }
 
 void imprimirDisciplinas(vector<Disciplina> &vetDisciplinas)
@@ -102,8 +102,8 @@ void imprimirDisciplinas(vector<Disciplina> &vetDisciplinas)
 void lerTurmas(vector<Turma> &vetTurmas, vector<Disciplina> &vetDisciplinas)
 {
 	FILE *arq;
-	arq = fopen("data/demanda.txt", "r");
-	printf("\t\tAbrindo arquivo \"data/demanda.txt\"\n");
+	arq = fopen("data-teste/demanda.txt", "r");
+	printf("\t\tAbrindo arquivo \"data-teste/demanda.txt\"\n");
 
 	while (!feof(arq))
 	{
@@ -130,7 +130,7 @@ void lerTurmas(vector<Turma> &vetTurmas, vector<Disciplina> &vetDisciplinas)
 	}
 
 	fclose(arq);
-	printf("\t\tFechando arquivo \"data/demanda.txt\"\n");
+	printf("\t\tFechando arquivo \"data-teste/demanda.txt\"\n");
 }
 
 int codificarTurma(Turma turma)
@@ -180,8 +180,8 @@ void imprimirTurmas(vector<Turma> &vetTurmas)
 void lerAulasPorTurma(vector<Turma> &vetTurmas)
 {
 	FILE *arq;
-	arq = fopen("data/horario.txt", "r");
-	printf("\t\tAbrindo arquivo \"data/horario.txt\"\n");
+	arq = fopen("data-teste/horario.txt", "r");
+	printf("\t\tAbrindo arquivo \"data-teste/horario.txt\"\n");
 
 	while (!feof(arq))
 	{
@@ -211,7 +211,7 @@ void lerAulasPorTurma(vector<Turma> &vetTurmas)
 	}
 
 	fclose(arq);
-	printf("\t\tFechando arquivo \"data/horario.txt\"\n");
+	printf("\t\tFechando arquivo \"data-teste/horario.txt\"\n");
 }
 
 int codigoHorario(char horario[6])
@@ -250,14 +250,21 @@ int codigoHorario(char horario[6])
 		return 15;
 }
 
-void getAulasTurmaCodificada(vector<Aula> &aulas, vector<Turma> &vetTurmas, int turmaCodificada)
+void getAulasTurmaCodificadaPorDiaSemana(vector<Aula> &aulas, vector<Turma> &vetTurmas, 
+							int turmaCodificada, int diaSemana)
 {
 	for (int i = 0; i < vetTurmas.size(); ++i)
 	{
 		Turma turma = vetTurmas[i];
 		if(turma.codigo == turmaCodificada)
 		{
-			aulas = turma.aulas;
+			for (int j = 0; j < turma.aulas.size(); ++j)
+			{
+				Aula aula = turma.aulas[j];
+				if(aula.diaSemana == diaSemana)
+					aulas.push_back(aula);	
+			}
+
 			break;
 		}	
 	}
@@ -308,6 +315,54 @@ void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada)
 		}
 
 	} while (h != 1);
+}
+
+void imprimirSolucaoCodificada(vector<vector<vector<int>>> &solucao)
+{
+
+}
+
+void imprimirSolucaoDecodificada(vector<vector<vector<int>>> &solucao, vector<Turma> &vetTurmas, 
+								 int qtdSalas, int qtdHorarios, int qtdDiasSemana)
+{
+	for (int i = 0; i < qtdDiasSemana; ++i)
+	{
+		printf("\n%da - Feira\n", i + 2);
+		
+		/**
+		 * Cabeçalho
+		 */ 
+		printf("\t");
+		for (int j = 0; j < qtdSalas; ++j)
+				printf("\tSala %-3d ", j);
+		
+		printf("\n");
+		for (int k = 0; k < qtdHorarios; ++k)
+		{
+			printf("Horario %d: ", i);
+			for (int j = 0; j < qtdSalas; ++j)
+			{
+				int turmaCodificada = solucao[i][j][k];
+
+				if (turmaCodificada == 0)
+				{
+					printf("\t---------");
+						continue;
+				}
+
+				for (int l = 0; l < vetTurmas.size(); ++l)
+				{
+					Turma turma = vetTurmas[l];
+					if(turma.codigo == turmaCodificada){
+						printf("\t%s %d-%d", turma.disciplina.departamento.sigla, 
+											turma.disciplina.id, turma.id);
+						break;
+					}
+				}
+			}
+			printf("\n");
+		}
+	}
 }
 
 int isHorarioDisponivel(vector<vector<int>> &solucao, int salaId, Aula aula)

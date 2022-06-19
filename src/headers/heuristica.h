@@ -11,6 +11,9 @@ void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas, vect
 
 void solucaoParcialVazia(vector<vector<int>> &solucao, int qtdSalas, int qtdHorarios);
 
+void alocarAula(vector<vector<int>> &solucao, int salaId, Aula aula, int turmaCodificada);
+void desalocarAula(vector<vector<int>> &solucao, int salaId, Aula aula);
+
 int calculaFO(vector<vector<vector<int>>> &solucao, int qtdDiasSemana, 
 			  vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios);
 
