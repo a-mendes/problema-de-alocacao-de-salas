@@ -24,19 +24,7 @@ int main()
 	 * 		j - Salas: Depende da instancia
 	 * 		k - horários: {07:30 a 21:50} totalizando 16 horários
 	 */ 
-	
 	vector<vector<vector<int>>> solucao;
-	// int ***solucao;
-	
-	// solucao = malloc(sizeof(int**) * 6);
-	// for (int i = 0; i < 6; ++i)
-	// {
-	// 	solucao[i] = malloc(sizeof(int*) * qtdSalas);
-	// 	for (int j = 0; j < qtdSalas; ++j)
-	// 	{
-	// 		solucao[i][j] = malloc(sizeof(int) * QTD_HORARIOS);
-	// 	}
-	// }
 	
 	int qtdSalas = vetSalas.size();
 	construirSolucaoInicial(solucao, vetTurmas, vetSalas, qtdSalas, QTD_HORARIOS);

@@ -192,6 +192,9 @@ void lerAulasPorTurma(vector<Turma> &vetTurmas)
 
 	    fscanf(arq, "%d|%d|%d|%c|%d|%5s|%5s|\n", &idDepartamento, &idDisciplina, &idTurma, 
 	    									   &aula.tipoAula, &aula.diaSemana, aula.horaInicio, aula.horaFim);
+
+	    aula.codigoHorarioInicio = codigoHorario(aula.horaInicio);
+	    aula.codigoHorarioFim = codigoHorario(aula.horaFim);
 	    
 	    for (int i = 0; i < vetTurmas.size(); ++i)
 	    {
@@ -209,6 +212,55 @@ void lerAulasPorTurma(vector<Turma> &vetTurmas)
 
 	fclose(arq);
 	printf("\t\tFechando arquivo \"data/horario.txt\"\n");
+}
+
+int codigoHorario(char horario[6])
+{
+	if(strcmp(horario, "07:30") == 0)
+		return 0;
+	if(strcmp(horario, "08:20") == 0)
+		return 1;
+	if(strcmp(horario, "09:10") == 0 || strcmp(horario, "09:30") == 0)
+		return 2;
+	if(strcmp(horario, "10:20") == 0)
+		return 3;
+	if(strcmp(horario, "11:10") == 0 || strcmp(horario, "11:20") == 0)
+		return 4;
+	if(strcmp(horario, "12:10") == 0 || strcmp(horario, "13:00") == 0)
+		return 5;
+	if(strcmp(horario, "13:50") == 0)
+		return 6;
+	if(strcmp(horario, "14:40") == 0 || strcmp(horario, "15:00") == 0)
+		return 7;
+	if(strcmp(horario, "15:50") == 0)
+		return 8;
+	if(strcmp(horario, "16:40") == 0 || strcmp(horario, "16:50") == 0)
+		return 9;
+	if(strcmp(horario, "17:40") == 0)
+		return 10;
+	if(strcmp(horario, "18:30") == 0 || strcmp(horario, "19:00") == 0)
+		return 11;
+	if(strcmp(horario, "19:50") == 0)
+		return 12;
+	if(strcmp(horario, "20:40") == 0 || strcmp(horario, "21:00") == 0)
+		return 13;
+	if(strcmp(horario, "21:50") == 0)
+		return 14;
+	if(strcmp(horario, "22:40") == 0)
+		return 15;
+}
+
+void getAulasTurmaCodificada(vector<Aula> &aulas, vector<Turma> &vetTurmas, int turmaCodificada)
+{
+	for (int i = 0; i < vetTurmas.size(); ++i)
+	{
+		Turma turma = vetTurmas[i];
+		if(turma.codigo == turmaCodificada)
+		{
+			aulas = turma.aulas;
+			break;
+		}	
+	}
 }
 
 void getVetorTurmaCodificada(vector<int> &turmaCodificada, vector<Turma> &vetTurmas)
@@ -256,4 +308,15 @@ void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada)
 		}
 
 	} while (h != 1);
+}
+
+int isHorarioDisponivel(vector<vector<int>> &solucao, int salaId, Aula aula)
+{	
+	for (int i = aula.codigoHorarioInicio; i < aula.codigoHorarioFim; ++i)
+	{
+		if(solucao[salaId][i] != 0)
+			return 0;
+	}
+
+	return 1;
 }

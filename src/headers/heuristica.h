@@ -9,6 +9,8 @@ void construirSolucaoInicial(vector<vector<vector<int>>> &solucao, vector<Turma>
 void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas, vector<Sala> &vetSalas, 
 					int qtdSalas, int qtdHorarios, int diaSemana);
 
+void solucaoParcialVazia(vector<vector<int>> &solucao, int qtdSalas, int qtdHorarios);
+
 int calculaFO(vector<vector<vector<int>>> &solucao, int qtdDiasSemana, 
 			  vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios);
 

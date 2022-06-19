@@ -1,6 +1,10 @@
 #ifndef aula_h
 #define aula_h
 
+#include <string.h>
+
+#define QTD_HORARIOS 16
+
 typedef struct aula
 {
 	char tipoAula;
