@@ -37,8 +37,6 @@ void getAulasTurmaCodificadaPorDiaSemana(vector<Aula> &aulas, vector<Turma> &vet
 void getVetorTurmaCodificada(vector<int> &turmaCodificada, vector<Turma> &vetTurmas);
 void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada);
 
-void imprimirSolucaoCodificada(vector<vector<vector<int>>> &solucao);
-
 void imprimirSolucaoDecodificada(vector<vector<vector<int>>> &solucao, vector<Turma> &vetTurmas,
 								 int qtdSalas, int qtdHorarios, int qtdDiasSemana);
 

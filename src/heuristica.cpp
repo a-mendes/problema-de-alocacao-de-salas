@@ -39,6 +39,10 @@ void construirSolucaoInicial(vector<vector<vector<int>>> &solucao, vector<Turma>
 
 	imprimirSolucaoDecodificada(solucao, vetTurmas, qtdSalas, qtdHorarios, 6);
 
+	int fo = calculaFO(solucao, 6, vetSalas, qtdSalas, qtdHorarios);
+
+	printf("\nFO = %d\n", fo);
+
 }
 
 void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas, 
@@ -57,7 +61,6 @@ void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas,
 	/**
 	 * Construtivo
 	 */ 
-
 	for (int i = 0; i < turmasCodificadas.size(); ++i)
 	{
 		int turmaCodificada = turmasCodificadas[i];
@@ -75,11 +78,34 @@ void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas,
 
 				int qtdAlunos = turmaCodificada % 100;
 				if(sala.capacidade >= qtdAlunos && isHorarioDisponivel(solucao, sala.id, aula))
-				{
-					alocarAula(solucao, sala.id, aula, turmaCodificada);
+				{	
+					/**
+					 * Verifica Aulas Geminadas
+					 */ 
+					if(aulas[j+1].codigoHorarioInicio == aula.codigoHorarioFim 
+				    && isHorarioDisponivel(solucao, sala.id, aulas[j+1]))
+					{
+						alocarAula(solucao, sala.id, aula, turmaCodificada);
+						alocarAula(solucao, sala.id, aulas[j+1], turmaCodificada);
+						j++;
+					}
+					break;
 				}
 			}
 		}
+	}
+}
+
+void solucaoParcialVazia(vector<vector<int>> &solucao, int qtdSalas, int qtdHorarios)
+{
+	for (int i = 0; i < qtdSalas; ++i)
+	{
+		vector<int> horariosVazios;
+		for (int j = 0; j < qtdHorarios; ++j)
+		{
+			horariosVazios.push_back(0);
+		}
+		solucao.push_back(horariosVazios);
 	}
 }
 
@@ -99,17 +125,51 @@ void desalocarAula(vector<vector<int>> &solucao, int salaId, Aula aula)
 	}
 }
 
-void solucaoParcialVazia(vector<vector<int>> &solucao, int qtdSalas, int qtdHorarios)
+void buscaLocal(vector<vector<vector<int>>> &solucao, int qtdDiasSemana)
 {
-	for (int i = 0; i < qtdSalas; ++i)
+	for (int i = 0; i < qtdDiasSemana; ++i)
 	{
-		vector<int> horariosVazios;
-		for (int j = 0; j < qtdHorarios; ++j)
-		{
-			horariosVazios.push_back(0);
-		}
-		solucao.push_back(horariosVazios);
+		buscaLocalPorDiaSemana(solucao[i]);
 	}
+}
+
+void buscaLocalPorDiaSemana(vector<vector<int>> &solucao)
+{
+
+	//Implementar Busca local
+	
+}
+
+void vizinhoAleatorio(vector<vector<int>> &solucao)
+{
+	/**
+	 * Aleatoriza uma turma alocada e em seguida aleatoriza uma
+	 * sala para tentar realocar
+	 */ 
+	int qtdSalas = solucao.size();
+	int qtdHorarios = solucao[0].size();
+
+	int aulaRealocarHorario;
+	int aulaRealocarSalaAtual;
+
+	do 
+	{
+		aulaRealocarHorario = rand() % qtdHorarios;
+	 	aulaRealocarSalaAtual = rand() % qtdSalas;
+	}
+	while (solucao[aulaRealocarSalaAtual][aulaRealocarHorario] == 0);
+
+	int novaSala = rand() % qtdSalas;
+
+	/**
+	 * Verifica se o horario esta vazio
+	 */ 
+	if(solucao[novaSala][aulaRealocarHorario] == 0)
+	{
+		solucao[novaSala][aulaRealocarHorario] = solucao[aulaRealocarSalaAtual][aulaRealocarHorario];
+		solucao[aulaRealocarSalaAtual][aulaRealocarHorario] = 0;
+	}
+
 }
 
 int calculaFO(vector<vector<vector<int>>> &solucao, int qtdDiasSemana, 
@@ -119,6 +179,7 @@ int calculaFO(vector<vector<vector<int>>> &solucao, int qtdDiasSemana,
 
 	for (int i = 0; i < qtdDiasSemana; ++i)
 	{
+
 		fo += calculaFOPorDiaSemana(solucao[i], vetSalas, qtdSalas, qtdHorarios);
 	}
 
@@ -163,7 +224,7 @@ int calculaFOPorDiaSemana(vector<vector<int>> &solucao, vector<Sala> &vetSalas,
 
 			hasHorarioVagoLimpeza += codTurma == 0;
 			qtdTransbordamentos += numAlunos > sala.capacidade;
-			qtdAlocacoesIneficientes += (numAlunos / sala.capacidade) < razaoAlocacaoSalas;
+			qtdAlocacoesIneficientes += (numAlunos / (sala.capacidade + 1)) < razaoAlocacaoSalas;
 		}
 
 		fo += qtdTransbordamentos * pesoSolucaoInviavel;
