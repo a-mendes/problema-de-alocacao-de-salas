@@ -1,43 +1,43 @@
 #include "headers/heuristica.h"
 
-void construirSolucaoInicial(vector<vector<vector<int>>> &solucao, vector<Turma> &vetTurmas, 
+void construirSolucaoInicial(vector<vector<vector<Turma>>> &solucao, vector<Turma> &vetTurmas, 
 	                         vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios)
 {
 	printf("\nConstruindo Solucao Inicial...\n");
 
 	printf("\n\tSolucao Segunda-Feira...\n");
-	vector<vector<int>> solucaoSegunda;
+	vector<vector<Turma>> solucaoSegunda;
 	solucaoParcial(solucaoSegunda, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 2);
 	solucao.push_back(solucaoSegunda);
 
 	printf("\n\tSolucao Terca-Feira...\n");
-	vector<vector<int>> solucaoTerca;
+	vector<vector<Turma>> solucaoTerca;
 	solucaoParcial(solucaoTerca, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 3);
 	solucao.push_back(solucaoTerca);
 
 	printf("\n\tSolucao Quarta-Feira...\n");
-	vector<vector<int>> solucaoQuarta;
+	vector<vector<Turma>> solucaoQuarta;
 	solucaoParcial(solucaoQuarta, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 4);
 	solucao.push_back(solucaoQuarta);
 
 	printf("\n\tSolucao Quinta-Feira...\n");
-	vector<vector<int>> solucaoQuinta;
+	vector<vector<Turma>> solucaoQuinta;
 	solucaoParcial(solucaoQuinta, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 5);
 	solucao.push_back(solucaoQuinta);
 
 	printf("\n\tSolucao Sexta-Feira...\n");
-	vector<vector<int>> solucaoSexta;
+	vector<vector<Turma>> solucaoSexta;
 	solucaoParcial(solucaoSexta, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 6);
 	solucao.push_back(solucaoSexta);
 
 	printf("\n\tSolucao Sabado...\n");
-	vector<vector<int>> solucaoSabado;
+	vector<vector<Turma>> solucaoSabado;
 	solucaoParcial(solucaoSabado, vetTurmas, vetSalas, qtdSalas, qtdHorarios, 3);
 	solucao.push_back(solucaoSabado);
 
 	printf("\nSolucao inicial construida com sucesso!\n");
 
-	imprimirSolucaoDecodificada(solucao, vetTurmas, qtdSalas, qtdHorarios, 6);
+	imprimirSolucao(solucao, qtdSalas, qtdHorarios, 6);
 
 	int fo = calculaFO(solucao, 6, vetSalas, qtdSalas, qtdHorarios);
 
@@ -45,48 +45,48 @@ void construirSolucaoInicial(vector<vector<vector<int>>> &solucao, vector<Turma>
 
 }
 
-void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas, 
+void solucaoParcial(vector<vector<Turma>> &solucao, vector<Turma> &vetTurmas, 
 	                vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios, int diaSemana)
 {
 	solucaoParcialVazia(solucao, qtdSalas, qtdHorarios);
 
-	vector<int> turmasCodificadas;
-	getVetorTurmaCodificada(turmasCodificadas, vetTurmas);
+
+	vector<Turma> turmasFiltro;
+	filtraTurmasPorDiaAula(turmasFiltro, vetTurmas, diaSemana);
 	
 	/**
 	 * Garantir a alocação das maiores turmas primeiro
 	 */ 
-	ordenarPorQuantidadeAlunos(turmasCodificadas);
+	ordenarPorQuantidadeAlunos(turmasFiltro);
 
 	/**
 	 * Construtivo
 	 */ 
-	for (int i = 0; i < turmasCodificadas.size(); ++i)
+	for (int i = 0; i < turmasFiltro.size(); ++i)
 	{
-		int turmaCodificada = turmasCodificadas[i];
-		
-		vector<Aula> aulas;
-		getAulasTurmaCodificadaPorDiaSemana(aulas, vetTurmas, turmaCodificada, diaSemana);
+		Turma turma = turmasFiltro[i];
 
-		for (int j = 0; j < aulas.size(); ++j)
+		for (int j = 0; j < turma.aulas.size(); ++j)
 		{
-			Aula aula = aulas[j];
+			Aula aula = turma.aulas[j];
 
 			for (int k = 0; k < vetSalas.size(); ++k)
 			{
 				Sala sala = vetSalas[k];
 
-				int qtdAlunos = turmaCodificada % 100;
+				int qtdAlunos = turma.qtdAlunos;
 				if(sala.capacidade >= qtdAlunos && isHorarioDisponivel(solucao, sala.id, aula))
 				{	
 					/**
 					 * Verifica Aulas Geminadas
 					 */ 
-					if(aulas[j+1].codigoHorarioInicio == aula.codigoHorarioFim 
-				    && isHorarioDisponivel(solucao, sala.id, aulas[j+1]))
+
+					//Melhorar
+					if(turma.aulas[j+1].codigoHorarioInicio == aula.codigoHorarioFim 
+				    && isHorarioDisponivel(solucao, sala.id, turma.aulas[j+1]))
 					{
-						alocarAula(solucao, sala.id, aula, turmaCodificada);
-						alocarAula(solucao, sala.id, aulas[j+1], turmaCodificada);
+						alocarAula(solucao, sala.id, aula, turma);
+						alocarAula(solucao, sala.id, turma.aulas[j+1], turma);
 						j++;
 					}
 					break;
@@ -96,36 +96,38 @@ void solucaoParcial(vector<vector<int>> &solucao, vector<Turma> &vetTurmas,
 	}
 }
 
-void solucaoParcialVazia(vector<vector<int>> &solucao, int qtdSalas, int qtdHorarios)
+void solucaoParcialVazia(vector<vector<Turma>> &solucao, int qtdSalas, int qtdHorarios)
 {
 	for (int i = 0; i < qtdSalas; ++i)
 	{
-		vector<int> horariosVazios;
+		vector<Turma> horariosVazios;
 		for (int j = 0; j < qtdHorarios; ++j)
 		{
-			horariosVazios.push_back(0);
+			Turma turma;
+			turma.id = 0;
+			horariosVazios.push_back(turma);
 		}
 		solucao.push_back(horariosVazios);
 	}
 }
 
-void alocarAula(vector<vector<int>> &solucao, int salaId, Aula aula, int turmaCodificada)
+void alocarAula(vector<vector<Turma>> &solucao, int salaId, Aula aula, Turma turma)
 {
 	for (int i = aula.codigoHorarioInicio; i < aula.codigoHorarioFim; ++i)
 	{
-		solucao[salaId][i] = turmaCodificada;
+		solucao[salaId][i] = turma;
 	}
 }
 
-void desalocarAula(vector<vector<int>> &solucao, int salaId, Aula aula)
+void desalocarAula(vector<vector<Turma>> &solucao, int salaId, Aula aula)
 {
 	for (int i = aula.codigoHorarioInicio; i < aula.codigoHorarioFim; ++i)
 	{
-		solucao[salaId][i] = 0;
+		solucao[salaId][i].id = 0;
 	}
 }
 
-void buscaLocal(vector<vector<vector<int>>> &solucao, int qtdDiasSemana)
+void buscaLocal(vector<vector<vector<Turma>>> &solucao, int qtdDiasSemana)
 {
 	for (int i = 0; i < qtdDiasSemana; ++i)
 	{
@@ -133,14 +135,14 @@ void buscaLocal(vector<vector<vector<int>>> &solucao, int qtdDiasSemana)
 	}
 }
 
-void buscaLocalPorDiaSemana(vector<vector<int>> &solucao)
+void buscaLocalPorDiaSemana(vector<vector<Turma>> &solucao)
 {
 
 	//Implementar Busca local
 	
 }
 
-void vizinhoAleatorio(vector<vector<int>> &solucao)
+void vizinhoAleatorio(vector<vector<Turma>> &solucao)
 {
 	/**
 	 * Aleatoriza uma turma alocada e em seguida aleatoriza uma
@@ -157,22 +159,22 @@ void vizinhoAleatorio(vector<vector<int>> &solucao)
 		aulaRealocarHorario = rand() % qtdHorarios;
 	 	aulaRealocarSalaAtual = rand() % qtdSalas;
 	}
-	while (solucao[aulaRealocarSalaAtual][aulaRealocarHorario] == 0);
+	while (solucao[aulaRealocarSalaAtual][aulaRealocarHorario].id == 0);
 
 	int novaSala = rand() % qtdSalas;
 
 	/**
 	 * Verifica se o horario esta vazio
 	 */ 
-	if(solucao[novaSala][aulaRealocarHorario] == 0)
+	if(solucao[novaSala][aulaRealocarHorario].id == 0)
 	{
 		solucao[novaSala][aulaRealocarHorario] = solucao[aulaRealocarSalaAtual][aulaRealocarHorario];
-		solucao[aulaRealocarSalaAtual][aulaRealocarHorario] = 0;
+		solucao[aulaRealocarSalaAtual][aulaRealocarHorario].id = 0;
 	}
 
 }
 
-int calculaFO(vector<vector<vector<int>>> &solucao, int qtdDiasSemana, 
+int calculaFO(vector<vector<vector<Turma>>> &solucao, int qtdDiasSemana, 
 			  vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios)
 {
 	int fo = 0;
@@ -186,7 +188,7 @@ int calculaFO(vector<vector<vector<int>>> &solucao, int qtdDiasSemana,
 	return fo;
 }
 
-int calculaFOPorDiaSemana(vector<vector<int>> &solucao, vector<Sala> &vetSalas, 
+int calculaFOPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas, 
 						  int qtdSalas, int qtdHorarios)
 {
 	int fo = 0;
@@ -219,10 +221,10 @@ int calculaFOPorDiaSemana(vector<vector<int>> &solucao, vector<Sala> &vetSalas,
 
 		for (int j = 0; j < qtdHorarios; ++j)
 		{
-			int codTurma = solucao[i][j];
-			int numAlunos = codTurma % 100;
+			Turma turma = solucao[i][j];
+			int numAlunos = turma.qtdAlunos;
 
-			hasHorarioVagoLimpeza += codTurma == 0;
+			hasHorarioVagoLimpeza += turma.id == 0;
 			qtdTransbordamentos += numAlunos > sala.capacidade;
 			qtdAlocacoesIneficientes += (numAlunos / (sala.capacidade + 1)) < razaoAlocacaoSalas;
 		}

@@ -24,7 +24,7 @@ int main()
 	 * 		j - Salas: Depende da instancia
 	 * 		k - horários: {07:30 a 21:50} totalizando 16 horários
 	 */ 
-	vector<vector<vector<int>>> solucao;
+	vector<vector<vector<Turma>>> solucao;
 	
 	int qtdSalas = vetSalas.size();
 	construirSolucaoInicial(solucao, vetTurmas, vetSalas, qtdSalas, QTD_HORARIOS);

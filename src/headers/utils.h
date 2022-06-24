@@ -31,15 +31,14 @@ void imprimirTurmas(vector<Turma> &vetTurmas);
 
 void lerAulasPorTurma(vector<Turma> &vetTurmas);
 int codigoHorario(char horario[6]);
-void getAulasTurmaCodificadaPorDiaSemana(vector<Aula> &aulas, vector<Turma> &vetTurmas, 
-							int turmaCodificada, int diaSemana);
 
-void getVetorTurmaCodificada(vector<int> &turmaCodificada, vector<Turma> &vetTurmas);
-void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada);
+void filtraTurmasPorDiaAula(vector<Turma> &turmaPorDiaAula, vector<Turma> &vetTurmas, int diaSemana);
+void ordenarPorQuantidadeAlunos(vector<Turma> &turmas);
 
-void imprimirSolucaoDecodificada(vector<vector<vector<int>>> &solucao, vector<Turma> &vetTurmas,
-								 int qtdSalas, int qtdHorarios, int qtdDiasSemana);
+void imprimirSolucao(vector<vector<vector<Turma>>> &solucao, int qtdSalas, 
+					int qtdHorarios, int qtdDiasSemana);
+void imprimirDiaSemana(int numeroDia);
 
-int isHorarioDisponivel(vector<vector<int>> &solucao, int salaId, Aula aula);
+int isHorarioDisponivel(vector<vector<Turma>> &solucao, int salaId, Aula aula);
 
 #endif

@@ -121,7 +121,6 @@ void lerTurmas(vector<Turma> &vetTurmas, vector<Disciplina> &vetDisciplinas)
 	    	if(idDisciplina == disciplina.id && idDepartamento == disciplina.departamento.id)
 	    	{
 	    		turma.disciplina = disciplina;
-	    		turma.codigo = codificarTurma(turma);
 	    		break;
 	    	}	
 	    }
@@ -133,32 +132,6 @@ void lerTurmas(vector<Turma> &vetTurmas, vector<Disciplina> &vetDisciplinas)
 	printf("\t\tFechando arquivo \"data/demanda.txt\"\n");
 }
 
-int codificarTurma(Turma turma)
-{
-	/**
-	 * A codificação resume em um int as informacoes mais relevantes de
-	 * uma turma. 
-	 * 
-	 * 		0: id departamento
-	 * 		1-3: id disciplina
-	 * 		4-5: id turma
-	 * 		6-7: quantidade de alunos matriculados na turma
-	 * 
-	 * 		Ex: Código: 11201140
-	 * 			* Disciplina: MTM120 ANALISE I (1120)
-	 * 			* Turma : 11
-	 * 			* numero de matriculados: 40
-	 */ 
-
-
-	int codigo = turma.disciplina.departamento.id * 10000000 +
-				 turma.disciplina.id * 10000 +
-				 turma.id * 100 +
-				 turma.qtdAlunos;
-
-	return codigo;
-}
-
 void imprimirTurmas(vector<Turma> &vetTurmas)
 {
 	printf("\n* Turmas\n");
@@ -166,14 +139,12 @@ void imprimirTurmas(vector<Turma> &vetTurmas)
     {
     	Turma turma = vetTurmas[i];
 
-    	printf("Codigo: %d\n", turma.codigo);
     	printf("\tTurma %d - %s: %d matriculados \n", turma.id,  turma.disciplina.nome, turma.qtdAlunos);
     	for (int j = 0; j < turma.aulas.size(); ++j)
     	{
     		Aula aula = turma.aulas[j];
     		printf("\t\t%da) %s - %s\n", aula.diaSemana, aula.horaInicio, aula.horaFim);
     	}
-    	
     }
 }
 
@@ -250,37 +221,31 @@ int codigoHorario(char horario[6])
 		return 15;
 }
 
-void getAulasTurmaCodificadaPorDiaSemana(vector<Aula> &aulas, vector<Turma> &vetTurmas, 
-							int turmaCodificada, int diaSemana)
+void filtraTurmasPorDiaAula(vector<Turma> &turmaPorDiaAula, vector<Turma> &vetTurmas, 
+							  int diaSemana)
 {
 	for (int i = 0; i < vetTurmas.size(); ++i)
 	{
 		Turma turma = vetTurmas[i];
-		if(turma.codigo == turmaCodificada)
+
+		Turma turmaFiltro;
+		turmaFiltro.id = turma.id;
+		turmaFiltro.disciplina = turma.disciplina;
+		turmaFiltro.qtdAlunos = turma.qtdAlunos;
+
+		for (int j = 0; j < turma.aulas.size(); ++j)
 		{
-			for (int j = 0; j < turma.aulas.size(); ++j)
-			{
-				Aula aula = turma.aulas[j];
-				if(aula.diaSemana == diaSemana)
-					aulas.push_back(aula);	
-			}
+			Aula aula = turma.aulas[j];
 
-			break;
-		}	
+			if (aula.diaSemana == diaSemana)
+				turmaFiltro.aulas.push_back(aula);
+		}
+
+		turmaPorDiaAula.push_back(turmaFiltro);
 	}
 }
 
-void getVetorTurmaCodificada(vector<int> &turmaCodificada, vector<Turma> &vetTurmas)
-{
-	for (int i = 0; i < vetTurmas.size(); ++i)
-	{
-		Turma turma = vetTurmas[i];
-		turmaCodificada.push_back(turma.codigo);
-	}
-}
-
-
-void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada)
+void ordenarPorQuantidadeAlunos(vector<Turma> &turmas)
 {
 	/**
 	 * Ordenação decrescente por "quantidade de alunos"
@@ -288,7 +253,7 @@ void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada)
 	 */
 
 	int h;
-	int n = turmaCodificada.size();
+	int n = turmas.size();
 
 	for(h = 1; h < n; h = 3 * h + 1);
 
@@ -298,12 +263,12 @@ void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada)
 
 		for(int i = h; i < n; i++)
 		{
-			int aux = turmaCodificada[i];
+			Turma aux = turmas[i];
 			int j = i;
 
-			while((turmaCodificada[j-h] % 100) < (aux % 100))
+			while(turmas[j-h].qtdAlunos < aux.qtdAlunos)
 			{
-				turmaCodificada[j] = turmaCodificada[j-h];
+				turmas[j] = turmas[j-h];
 
 				j = j - h;
 
@@ -311,18 +276,19 @@ void ordenarPorQuantidadeAlunos(vector<int> &turmaCodificada)
 					break;
 			}
 			
-			turmaCodificada[j] = aux;
+			turmas[j] = aux;
 		}
 
 	} while (h != 1);
 }
 
-void imprimirSolucaoDecodificada(vector<vector<vector<int>>> &solucao, vector<Turma> &vetTurmas, 
-								 int qtdSalas, int qtdHorarios, int qtdDiasSemana)
+void imprimirSolucao(vector<vector<vector<Turma>>> &solucao, int qtdSalas, 
+					int qtdHorarios, int qtdDiasSemana)
 {
 	for (int i = 0; i < qtdDiasSemana; ++i)
 	{
-		printf("\n%da - Feira\n", i + 2);
+		printf("\n===============================================================\n");
+		imprimirDiaSemana(i+2);
 		
 		/**
 		 * Cabeçalho
@@ -337,34 +303,55 @@ void imprimirSolucaoDecodificada(vector<vector<vector<int>>> &solucao, vector<Tu
 			printf("Horario %d: ", k);
 			for (int j = 0; j < qtdSalas; ++j)
 			{
-				int turmaCodificada = solucao[i][j][k];
+				Turma turma = solucao[i][j][k];
 
-				if (turmaCodificada == 0)
+				if (turma.id == 0)
 				{
 					printf("\t---------");
 						continue;
 				}
 
-				for (int l = 0; l < vetTurmas.size(); ++l)
-				{
-					Turma turma = vetTurmas[l];
-					if(turma.codigo == turmaCodificada){
-						printf("\t%s %d-%d", turma.disciplina.departamento.sigla, 
+				
+				printf("\t%s %d-%d", turma.disciplina.departamento.sigla, 
 											turma.disciplina.id, turma.id);
-						break;
-					}
-				}
 			}
 			printf("\n");
 		}
 	}
 }
 
-int isHorarioDisponivel(vector<vector<int>> &solucao, int salaId, Aula aula)
+void imprimirDiaSemana(int numeroDia)
+{
+	switch(numeroDia)
+	{
+		case 1: printf("\nDomingo\n");
+			break;
+
+		case 2: printf("\nSegunda-Feira\n");
+			break;
+
+		case 3: printf("\nTerca-Feira\n");
+			break;
+
+		case 4: printf("\nQuarta-Feira\n");
+			break;
+
+		case 5: printf("\nQuinta-Feira\n");
+			break;
+
+		case 6: printf("\nSexta-Feira\n");
+			break;
+
+		case 7: printf("\nSabado\n");
+			break;
+	}
+}
+
+int isHorarioDisponivel(vector<vector<Turma>> &solucao, int salaId, Aula aula)
 {	
 	for (int i = aula.codigoHorarioInicio; i < aula.codigoHorarioFim; ++i)
 	{
-		if(solucao[salaId][i] != 0)
+		if(solucao[salaId][i].id != 0)
 			return 0;
 	}
 

@@ -7,7 +7,6 @@
 typedef struct turma
 {
 	int id;
-	int codigo;
 	Disciplina disciplina;
 	int qtdAlunos;
 	vector<Aula> aulas;
