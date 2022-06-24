@@ -37,9 +37,9 @@ void construirSolucaoInicial(vector<vector<vector<Turma>>> &solucao, vector<Turm
 
 	printf("\nSolucao inicial construida com sucesso!\n");
 
-	imprimirSolucao(solucao, qtdSalas, qtdHorarios, 6);
+	imprimirSolucao(solucao);
 
-	int fo = calculaFO(solucao, 6, vetSalas, qtdSalas, qtdHorarios);
+	int fo = calculaFO(solucao, vetSalas);
 
 	printf("\nFO = %d\n", fo);
 
@@ -49,7 +49,6 @@ void solucaoParcial(vector<vector<Turma>> &solucao, vector<Turma> &vetTurmas,
 	                vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios, int diaSemana)
 {
 	solucaoParcialVazia(solucao, qtdSalas, qtdHorarios);
-
 
 	vector<Turma> turmasFiltro;
 	filtraTurmasPorDiaAula(turmasFiltro, vetTurmas, diaSemana);
@@ -127,22 +126,56 @@ void desalocarAula(vector<vector<Turma>> &solucao, int salaId, Aula aula)
 	}
 }
 
-void buscaLocal(vector<vector<vector<Turma>>> &solucao, int qtdDiasSemana)
+void buscaLocal(vector<vector<vector<Turma>>> &solucao, vector<Sala> &vetSalas)
 {
+	printf("\nIniciando Busca Local...\n");
+
+	int qtdDiasSemana = solucao.size();
+	int qtdSalas = solucao[0].size();
+	int qtdHorarios = solucao[0][0].size();
+
+	int fo = 0;
 	for (int i = 0; i < qtdDiasSemana; ++i)
 	{
-		buscaLocalPorDiaSemana(solucao[i]);
+		printf("\n\tDia %d...\n", i+1);
+		fo += buscaLocalPorDiaSemana(solucao[i], vetSalas);
 	}
+
+	printf("\nBusca Local finalizada!\n");
+
+	imprimirSolucao(solucao);
+
+	printf("\nFO = %d\n", fo);
 }
 
-void buscaLocalPorDiaSemana(vector<vector<Turma>> &solucao)
+int buscaLocalPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas)
 {
+	/**
+	 * Descida Randomica
+	 */ 
+	int iterMAX = 100;
+	int foSolucao = calculaFOPorDiaSemana(solucao, vetSalas);
 
-	//Implementar Busca local
-	
+	for (int i = 0; i < iterMAX; ++i)
+	{
+		printf("\t\tGerando Vizinho, iteracao: %d\n", i+1);
+		vector<vector<Turma>> vizinhoAleatorio;
+		vizinhoAleatorio = solucao;
+		gerarVizinhoAleatorio(vizinhoAleatorio);
+
+		int foVizinho = calculaFOPorDiaSemana(vizinhoAleatorio, vetSalas);
+
+		if(foVizinho < foSolucao)
+		{
+			solucao = vizinhoAleatorio;
+			foSolucao = foVizinho;
+		}
+	}	
+
+	return foSolucao;
 }
 
-void vizinhoAleatorio(vector<vector<Turma>> &solucao)
+void gerarVizinhoAleatorio(vector<vector<Turma>> &solucao)
 {
 	/**
 	 * Aleatoriza uma turma alocada e em seguida aleatoriza uma
@@ -171,25 +204,24 @@ void vizinhoAleatorio(vector<vector<Turma>> &solucao)
 		solucao[novaSala][aulaRealocarHorario] = solucao[aulaRealocarSalaAtual][aulaRealocarHorario];
 		solucao[aulaRealocarSalaAtual][aulaRealocarHorario].id = 0;
 	}
-
 }
 
-int calculaFO(vector<vector<vector<Turma>>> &solucao, int qtdDiasSemana, 
-			  vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios)
+int calculaFO(vector<vector<vector<Turma>>> &solucao, vector<Sala> &vetSalas)
 {
+	int qtdDiasSemana = solucao.size();
+
 	int fo = 0;
 
 	for (int i = 0; i < qtdDiasSemana; ++i)
 	{
 
-		fo += calculaFOPorDiaSemana(solucao[i], vetSalas, qtdSalas, qtdHorarios);
+		fo += calculaFOPorDiaSemana(solucao[i], vetSalas);
 	}
 
 	return fo;
 }
 
-int calculaFOPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas, 
-						  int qtdSalas, int qtdHorarios)
+int calculaFOPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas)
 {
 	int fo = 0;
 
@@ -203,6 +235,9 @@ int calculaFOPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas
 
 	int pesoSolucaoInviavel = 20;
 	int pesoSolucaoBaixaQualidade = 5;
+
+	int qtdSalas = solucao.size();
+	int qtdHorarios = solucao[0].size();
 
 	for (int i = 0; i < qtdSalas; ++i)
 	{

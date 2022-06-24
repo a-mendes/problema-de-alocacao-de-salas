@@ -282,9 +282,12 @@ void ordenarPorQuantidadeAlunos(vector<Turma> &turmas)
 	} while (h != 1);
 }
 
-void imprimirSolucao(vector<vector<vector<Turma>>> &solucao, int qtdSalas, 
-					int qtdHorarios, int qtdDiasSemana)
+void imprimirSolucao(vector<vector<vector<Turma>>> &solucao)
 {
+	int qtdDiasSemana = solucao.size();
+	int qtdSalas = solucao[0].size();
+	int qtdHorarios = solucao[0][0].size();
+	
 	for (int i = 0; i < qtdDiasSemana; ++i)
 	{
 		printf("\n===============================================================\n");

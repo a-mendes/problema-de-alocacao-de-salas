@@ -29,6 +29,9 @@ int main()
 	int qtdSalas = vetSalas.size();
 	construirSolucaoInicial(solucao, vetTurmas, vetSalas, qtdSalas, QTD_HORARIOS);
 
+	buscaLocal(solucao, vetSalas);
+
+
 	return 0;
 }
 

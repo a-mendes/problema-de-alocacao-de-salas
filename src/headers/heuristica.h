@@ -16,13 +16,13 @@ void alocarAulaGeminada(vector<vector<Turma>> &solucao, int salaId, vector<Aula>
 void alocarAula(vector<vector<Turma>> &solucao, int salaId, Aula aula, Turma turma);
 void desalocarAula(vector<vector<Turma>> &solucao, int salaId, Aula aula);
 
-void buscaLocal(vector<vector<vector<Turma>>> &solucao, int qtdDiasSemana);
-void buscaLocalPorDiaSemana(vector<vector<Turma>> &solucao);
+void buscaLocal(vector<vector<vector<Turma>>> &solucao, vector<Sala> &vetSalas);
+int buscaLocalPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas);
 
-int calculaFO(vector<vector<vector<Turma>>> &solucao, int qtdDiasSemana, 
-			  vector<Sala> &vetSalas, int qtdSalas, int qtdHorarios);
+void gerarVizinhoAleatorio(vector<vector<Turma>> &solucao);
 
-int calculaFOPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas, 
-						  int qtdSalas, int qtdHorarios);
+int calculaFO(vector<vector<vector<Turma>>> &solucao, vector<Sala> &vetSalas);
+int calculaFOPorDiaSemana(vector<vector<Turma>> &solucao, vector<Sala> &vetSalas);
+
 
 #endif

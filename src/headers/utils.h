@@ -35,8 +35,7 @@ int codigoHorario(char horario[6]);
 void filtraTurmasPorDiaAula(vector<Turma> &turmaPorDiaAula, vector<Turma> &vetTurmas, int diaSemana);
 void ordenarPorQuantidadeAlunos(vector<Turma> &turmas);
 
-void imprimirSolucao(vector<vector<vector<Turma>>> &solucao, int qtdSalas, 
-					int qtdHorarios, int qtdDiasSemana);
+void imprimirSolucao(vector<vector<vector<Turma>>> &solucao);
 void imprimirDiaSemana(int numeroDia);
 
 int isHorarioDisponivel(vector<vector<Turma>> &solucao, int salaId, Aula aula);
